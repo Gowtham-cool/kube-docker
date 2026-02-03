@@ -18,6 +18,9 @@ Parameters:
     Type: String
   Env:
     Type: String
+  RepositoryType:
+    Type: "String
+      
 
 Resources:
 
