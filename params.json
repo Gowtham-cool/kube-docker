@@ -1,6 +1,6 @@
 {
   "Parameters": {
-    "Namespace": "gev-hq-af",
+    "Namespace": "kube-test-docker",
     "CodeBuildServiceRole": "arn:aws:iam::442216224934:role/kube-docker-codebuild-role",
     "S3BucketNameArtifacts": "",
     "CodePipelineServiceRole": "arn:aws:iam::442216224934:role/kube-docker-codepipeline-role",
