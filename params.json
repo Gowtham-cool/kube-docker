@@ -4,9 +4,9 @@
     "CodeBuildServiceRole": "arn:aws:iam::442216224934:role/kube-docker-codebuild-role",
     "S3BucketNameArtifacts": "",
     "CodePipelineServiceRole": "arn:aws:iam::442216224934:role/kube-docker-codepipeline-role",
-    "ConnectionArnGitHub": "",
-    "BranchName": "",
-    "BuildSpec": "",
+    "ConnectionArnGitHub": "arn:aws:codeconnections:us-east-1:442216224934:connection/00180e30-2582-434c-978e-a0734b5c7015",
+    "BranchName": "kube-docker",
+    "BuildSpec": "buildspec.yml",
     "Env": "testing"
   }
 }
