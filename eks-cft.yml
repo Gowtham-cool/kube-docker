@@ -19,7 +19,7 @@ Parameters:
   Env:
     Type: String
   RepositoryType:
-    Type: "String
+    Type: String
       
 
 Resources:
