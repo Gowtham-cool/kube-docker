@@ -2,7 +2,7 @@
   "Parameters": {
     "Namespace": "kube-test-docker",
     "CodeBuildServiceRole": "arn:aws:iam::442216224934:role/kube-docker-codebuild-role",
-    "S3BucketNameArtifacts": "",
+    "S3BucketNameArtifacts": "kube-docker-artifacts",
     "CodePipelineServiceRole": "arn:aws:iam::442216224934:role/kube-docker-codepipeline-role",
     "ConnectionArnGitHub": "arn:aws:codeconnections:us-east-1:442216224934:connection/00180e30-2582-434c-978e-a0734b5c7015",
     "BranchName": "kube-docker",
