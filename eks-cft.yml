@@ -61,7 +61,7 @@ Resources:
                 - Name: SourceOutput
               Configuration:
                 ConnectionArn: !Ref ConnectionArnGitHub
-                FullRepositoryId: !Ref GitHubRepo
+                FullRepositoryId: !Ref FullRepositoryId 
                 BranchName: !Ref BranchName
         - Name: Build
           Actions:
