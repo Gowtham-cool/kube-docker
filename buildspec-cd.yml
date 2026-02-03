@@ -1,16 +1,16 @@
-version: 0.2
+#version: 0.2
 
-phases:
-  pre_build:
-    commands:
-      - IMAGE_URI=$(cat imageDetail.txt | cut -d '=' -f2)
-      - aws eks update-kubeconfig --region ap-south-1 --name my-eks-cluster
+#phases:
+  #pre_build:
+   # commands:
+   #   - IMAGE_URI=$(cat imageDetail.txt | cut -d '=' -f2)
+   #   - aws eks update-kubeconfig --region ap-south-1 --name my-eks-cluster
 
-  build:
-    commands:
-      - |
-        if [ "$ENVIRONMENT" = "qa" ]; then
-          sed "s|IMAGE_URI|$IMAGE_URI|g" k8s/qa-deployment.yaml | kubectl apply -f -
-        else
-          sed "s|IMAGE_URI|$IMAGE_URI|g" k8s/prod-deployment.yaml | kubectl apply -f -
-        fi
+ # build:
+ #   commands:
+  #    - |
+   #     if [ "$ENVIRONMENT" = "qa" ]; then
+       #   sed "s|IMAGE_URI|$IMAGE_URI|g" k8s/qa-deployment.yaml | kubectl apply -f -
+     #   else
+     #     sed "s|IMAGE_URI|$IMAGE_URI|g" k8s/prod-deployment.yaml | kubectl apply -f -
+      #  fi
