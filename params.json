@@ -1,9 +1,9 @@
 {
   "Parameters": {
     "Namespace": "gev-hq-af",
-    "CodeBuildServiceRole": "",
+    "CodeBuildServiceRole": "arn:aws:iam::442216224934:role/kube-docker-codebuild-role",
     "S3BucketNameArtifacts": "",
-    "CodePipelineServiceRole": "",
+    "CodePipelineServiceRole": "arn:aws:iam::442216224934:role/kube-docker-codepipeline-role",
     "ConnectionArnGitHub": "",
     "BranchName": "",
     "BuildSpec": "",
