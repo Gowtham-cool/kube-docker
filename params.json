@@ -1,12 +1,12 @@
 {
   "Parameters": {
     "Namespace": "gev-hq-af",
-    "CodeBuildServiceRole": "arn:aws:iam::444238132467:role/bu-ge-pwr-codebuild-svc",
-    "S3BucketNameArtifacts": "us9p-codebuild-artifacts",
-    "CodePipelineServiceRole": "arn:aws:iam::444238132467:role/bu-ge-pwr-codepipeline-exec",
-    "ConnectionArnGitHub": "arn:aws:codeconnections:us-east-1:444238132467:connection/e79ed2f2-079e-4fe8-b493-3335ff587cb3",
-    "BranchName": "main",
-    "BuildSpec": "Airflow/hq-af-buildspec.yml",
-    "Env": "-"
+    "CodeBuildServiceRole": "",
+    "S3BucketNameArtifacts": "",
+    "CodePipelineServiceRole": "",
+    "ConnectionArnGitHub": "",
+    "BranchName": "",
+    "BuildSpec": "",
+    "Env": "testing"
   }
 }
