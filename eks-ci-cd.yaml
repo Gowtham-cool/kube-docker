@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: EKS Cluster + CI/CD Pipeline
+
+Parameters:
+  Namespace:
+    Type: String
+  CodeBuildServiceRole:
+    Type: String
+  S3BucketNameArtifacts:
+    Type: String
+  CodePipelineServiceRole:
+    Type: String
+  ConnectionArnGitHub:
+    Type: String
+  BranchName:
+    Type: String
+  BuildSpec:
+    Type: String
+  Env:
+    Type: String
+
+Resources:
+
+  # Example: CodeBuild Project
+  MyAppCodeBuild:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub "${Namespace}-codebuild"
+      ServiceRole: !Ref CodeBuildServiceRole
+      Source:
+        Type: GITHUB
+        Location: !Ref ConnectionArnGitHub
+        BuildSpec: !Ref BuildSpec
+      Artifacts:
+        Type: S3
+        Location: !Ref S3BucketNameArtifacts
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:7.0
+        Type: LINUX_CONTAINER
+
+  # Example: CodePipeline
+  MyAppPipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Sub "${Namespace}-pipeline"
+      RoleArn: !Ref CodePipelineServiceRole
+      ArtifactStore:
+        Type: S3
+        Location: !Ref S3BucketNameArtifacts
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: SourceAction
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Version: '1'
+                Provider: CodeStarSourceConnection
+              OutputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                ConnectionArn: !Ref ConnectionArnGitHub
+                FullRepositoryId: !Ref GitHubRepo
+                BranchName: !Ref BranchName
+        - Name: Build
+          Actions:
+            - Name: BuildAction
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: '1'
+                Provider: CodeBuild
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+              Configuration:
+                ProjectName: !Ref MyAppCodeBuild
