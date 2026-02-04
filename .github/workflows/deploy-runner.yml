@@ -1,0 +1,29 @@
+name: Deploy CodeBuild Runner
+
+on:
+  workflow_dispatch:  # Manual trigger in GitHub Actions
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy CloudFormation Stack
+        run: |
+          aws cloudformation deploy \
+            --template-file infra/codebuild-gha-runner.yml \
+            --stack-name kube-docker-gha-runner \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+                GitHubRepositoryOwner=Gowtham-cool \
+                GitHubRepositoryName=kube-docker \
+                WorkflowNamePattern=runners-verify
