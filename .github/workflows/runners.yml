@@ -1,4 +1,4 @@
-name: runners
+name: CodeBuild Feature Runner
 
 # Trigger on push to any feature branch, or manual run
 on:
