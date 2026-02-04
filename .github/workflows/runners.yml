@@ -1,0 +1,34 @@
+name: runners
+
+# Trigger on push to any feature branch, or manual run
+on:
+  push:
+    branches:
+      - feature/*
+  workflow_dispatch:
+
+jobs:
+  build:
+    # Replace <project-name> with your CodeBuild runner project name
+    runs-on: codebuild-<project-name>-${{ github.run_id }}-${{ github.run_attempt }};image=aws/codebuild/standard:5.0;instance-size=small;buildspec-override=true
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 3: Run tests
+      - name: Run tests
+        run: npm test
+
+      # Step 4: Build project
+      - name: Build project
+        run: npm run build
+
+      # Step 5: Finish
+      - name: Finish
+        run: echo "Feature branch build completed successfully on CodeBuild runner!"
