@@ -44,4 +44,4 @@ jobs:
         run: aws sts get-caller-identity
 
       - name: Start AWS CodeBuild
-        run: aws codebuild start-build --project-name my-codebuild-project-set
+        run: aws codebuild start-build --project-name kube-docker-build
