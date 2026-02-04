@@ -1,6 +1,5 @@
-name: CI/CD via AWS CodeBuild
+name: Kube-Docker CI/CD
 
-# Trigger the workflow
 on:
   push:
     branches:
@@ -14,20 +13,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js (optional, adjust for your project)
+      # Step 2: List repo files for debugging (optional)
+      - name: List files
+        run: ls -R
+
+      # Step 3: Setup Node.js (adjust version if needed)
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
+      # Step 4: Install dependencies (update working-directory if needed)
       - name: Install dependencies
+        working-directory: kube-docker  # <- folder containing package.json
         run: npm install
 
-      # Step 3: Configure AWS credentials
+      # Step 5: Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -35,7 +40,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1  # change to your region
 
-      # Step 4: Start CodeBuild project
+      # Step 6: Trigger CodeBuild project
       - name: Start AWS CodeBuild
         run: |
-          aws codebuild start-build --project-name my-codebuild-project-test
+          aws codebuild start-build --project-name your-codebuild-project-name
