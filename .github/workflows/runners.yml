@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     # Replace <project-name> with your CodeBuild runner project name
-    runs-on: codebuild-<project-name>-${{ github.run_id }}-${{ github.run_attempt }};image=aws/codebuild/standard:5.0;instance-size=small;buildspec-override=true
+    runs-on: codebuild-gha-project-verify-${{ github.run_id }}-${{ github.run_attempt }};image=aws/codebuild/standard:5.0;instance-size=small;buildspec-override=true
 
     steps:
       # Step 1: Checkout repository
