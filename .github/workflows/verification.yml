@@ -1,7 +1,7 @@
 jobs:
   build:
     runs-on:
-      - codebuild-<project-name>-${{ github.run_id }}-${{ github.run_attempt }}
+      - codebuild-gha-project-verify-${{ github.run_id }}-${{ github.run_attempt }}
         image: aws/codebuild/standard:5.0
         instance-size: small
         buildspec-override: true
