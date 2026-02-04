@@ -1,37 +1,22 @@
-name: runners   # <-- Workflow name set as requested
+name: runners
 
 on:
   push:
     branches:
-      - feature/*   # Trigger on all feature branches
+      - main
+      - feature/*
+
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: gha-project-verify-${{ github.run_id }}-${{ github.run_attempt }};image=aws/codebuild/standard:5.0;instance-size=small;buildspec-override=true
+  sanity-check:
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Show branch
+        run: |
+          echo "Branch: $GITHUB_REF"
+          echo "Repo: $GITHUB_REPOSITORY"
 
-      # Step 2: Optional - setup Node.js version if needed
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: npm install
-
-      # Step 4: Run tests
-      - name: Run tests
-        run: npm test
-
-      # Step 5: Build project
-      - name: Build project
-        run: npm run build
-
-      # Step 6: Finish
-      - name: Finish
-        run: echo "Feature branch build completed successfully on CodeBuild runner!"
+      - name: Hello
+        run: echo "GitHub Actions workflow is working"
