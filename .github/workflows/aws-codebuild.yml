@@ -1,4 +1,4 @@
-name: Node.js Test
+name: Kube-Docker CI/CD
 
 on:
   push:
@@ -27,10 +27,21 @@ jobs:
             exit 1
           fi
           DIR=$(dirname "$FILE")
-          echo "package.json found at $FILE"
           echo "dir=$DIR" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
         run: npm install
         working-directory: ${{ steps.find_package.outputs.dir }}
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Test AWS CLI
+        run: aws sts get-caller-identity
+
+      - name: Start AWS CodeBuild
+        run: aws codebuild start-build --project-name my-codebuild-project-set
