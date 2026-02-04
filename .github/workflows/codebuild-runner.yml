@@ -1,10 +1,13 @@
+name: runners-verify
+
+on:
+  push:
+    branches:
+      - feature/*
+
 jobs:
   build:
-    runs-on:
-      - codebuild-gha-project-verify-${{ github.run_id }}-${{ github.run_attempt }}
-        image: aws/codebuild/standard:5.0
-        instance-size: small
-        buildspec-override: true
+    runs-on: codebuild-gha-project-verify-${{ github.run_id }}-${{ github.run_attempt }};image=aws/codebuild/standard:5.0;instance-size=small;buildspec-override=true
 
     steps:
       - name: Checkout repository
