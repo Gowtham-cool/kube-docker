@@ -4,32 +4,56 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: List files
+      # Step 2: Debug repo structure (optional, remove later)
+      - name: List repo files
         run: ls -R
 
+      # Step 3: Find the folder containing package.json
+      - name: Detect package.json folder
+        id: find_package
+        run: |
+          FILE=$(find . -name package.json | head -n 1)
+          if [ -z "$FILE" ]; then
+            echo "package.json not found! Exiting..."
+            exit 1
+          fi
+          DIR=$(dirname "$FILE")
+          echo "package.json found at $FILE"
+          echo "Folder to use: $DIR"
+          echo "dir=$DIR" >> $GITHUB_OUTPUT
+
+      # Step 4: Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
+      # Step 5: Install dependencies in detected folder
       - name: Install dependencies
-        run: npm install  # <- no working-directory if package.json is at root
+        run: npm install
+        working-directory: ${{ steps.find_package.outputs.dir }}
 
+      # Step 6: Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: us-east-1   # change to your region
 
+      # Step 7: Trigger AWS CodeBuild project
       - name: Start AWS CodeBuild
-        run: aws codebuild start-build --project-name your-codebuild-project-name
+        run: aws codebuild start-build --project-name my-codebuild-project-check
