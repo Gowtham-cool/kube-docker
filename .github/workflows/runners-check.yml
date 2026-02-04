@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: codebuild-kube-docker-feature-${{ github.run_id }}-${{ github.run_attempt }};image=aws/codebuild/standard:5.0;instance-size=small;buildspec-override=true
+    runs-on: gha-project-verify-feature-${{ github.run_id }}-${{ github.run_attempt }};image=aws/codebuild/standard:5.0;instance-size=small;buildspec-override=true
 
     steps:
       # Step 1: Checkout repository
