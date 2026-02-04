@@ -1,4 +1,4 @@
-name: Hello Actions
+name: Node.js Test
 
 on:
   push:
@@ -6,12 +6,31 @@ on:
       - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest  # GitHub-hosted runner
+  build:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Say Hello
-        run: echo "Hello from GitHub Actions!"
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Detect package.json folder
+        id: find_package
+        run: |
+          FILE=$(find . -name package.json | head -n 1)
+          if [ -z "$FILE" ]; then
+            echo "package.json not found! Exiting..."
+            exit 1
+          fi
+          DIR=$(dirname "$FILE")
+          echo "package.json found at $FILE"
+          echo "dir=$DIR" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ steps.find_package.outputs.dir }}
+
