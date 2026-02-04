@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  AWS CodeBuild Runner for GitHub Actions
+  Automates GitHub Actions workflow jobs for kube-docker repository
+
+Parameters:
+  GitHubRepositoryOwner:
+    Type: String
+    Default: Gowtham-cool
+    Description: GitHub username or organization
+  GitHubRepositoryName:
+    Type: String
+    Default: kube-docker
+    Description: GitHub repository name
+  WorkflowNamePattern:
+    Type: String
+    Default: runners-verify-v2
+    Description: Regex pattern for workflow name to trigger this runner
+
+Resources:
+
+  ## ------------------------------
+  ## CodeBuild Service Role
+  ## ------------------------------
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: kube-docker-gha-runner-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess
+        - arn:aws:iam::aws:policy/SecretsManagerReadWrite
+
+  ## ------------------------------
+  ## CodeBuild Runner Project
+  ## ------------------------------
+  CodeBuildRunnerProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: kube-docker-gha-runner
+      Description: Runner project for GitHub Actions workflow jobs
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:6.0
+      Source:
+        Type: GITHUB
+        Location: !Sub https://github.com/${GitHubRepositoryOwner}/${GitHubRepositoryName}
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Type: EVENT
+              Pattern: WORKFLOW_JOB_QUEUED
+            - Type: WORKFLOW_NAME
+              Pattern: !Ref WorkflowNamePattern
+
+Outputs:
+  CodeBuildProjectName:
+    Description: Name of the CodeBuild Runner Project
+    Value: !Ref CodeBuildRunnerProject
+
+  CodeBuildServiceRoleArn:
+    Description: IAM Role ARN used by the CodeBuild Project
+    Value: !GetAtt CodeBuildServiceRole.Arn
