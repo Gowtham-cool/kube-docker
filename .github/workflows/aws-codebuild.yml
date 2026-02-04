@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -12,17 +15,37 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: List files
+      - name: List repo files
         run: ls -R
 
+      - name: Detect package.json folder
+        id: find_package
+        run: |
+          FILE=$(find . -name package.json | head -n 1 || true)
+          if [ -z "$FILE" ]; then
+            echo "package.json not found. Skipping Node steps."
+            echo "found=false" >> $GITHUB_OUTPUT
+            echo "dir=." >> $GITHUB_OUTPUT
+          else
+            DIR=$(dirname "$FILE")
+            echo "package.json found at $FILE"
+            echo "found=true" >> $GITHUB_OUTPUT
+            echo "dir=$DIR" >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup Node.js
+        if: steps.find_package.outputs.found == 'true'
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install  # <- no working-directory if package.json is at root
+        if: steps.find_package.outputs.found == 'true'
+        run: npm install
+        working-directory: ${{ steps.find_package.outputs.dir }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -32,4 +55,4 @@ jobs:
           aws-region: us-east-1
 
       - name: Start AWS CodeBuild
-        run: aws codebuild start-build --project-name your-codebuild-project-name
+        run: aws codebuild start-build --project-name my-codebuild-project-check
