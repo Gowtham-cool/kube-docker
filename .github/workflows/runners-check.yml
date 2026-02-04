@@ -1,9 +1,9 @@
-name: runners-verify
+name: runners-check
 
 on:
   push:
     branches:
-      - feature/*   # Trigger on feature branches
+      - feature/*   # Only trigger on feature branches
   workflow_dispatch: # Optional manual trigger
 
 jobs:
@@ -11,17 +11,22 @@ jobs:
     runs-on: codebuild-kube-docker-gha-runner-${{ github.run_id }}-${{ github.run_attempt }};image=aws/codebuild/standard:6.0;instance-size=small;buildspec-override=true
 
     steps:
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Step 2: Install dependencies
       - name: Install dependencies
         run: npm install
 
+      # Step 3: Run tests
       - name: Run tests
         run: npm test
 
+      # Step 4: Build project
       - name: Build project
         run: npm run build
 
+      # Step 5: Finish
       - name: Finish
         run: echo "Feature branch build completed successfully on CodeBuild runner!"
